@@ -4,16 +4,20 @@ import java.io.File;
 import java.lang.reflect.Constructor;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiMultiplayer;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.resources.ResourcePackRepository;
 import net.minecraft.client.resources.ResourcePackRepository.Entry;
 import net.minecraftforge.client.event.GuiScreenEvent.ActionPerformedEvent;
 import net.minecraftforge.client.event.GuiScreenEvent.InitGuiEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockHandler {
 
@@ -57,6 +61,7 @@ public class BlockHandler {
 	}
 
 	@SubscribeEvent
+	@SideOnly(Side.CLIENT)
 	public void onActionPerformed(ActionPerformedEvent.Pre event) {
 		if (event.getGui() instanceof GuiMultiplayer && event.getButton().id == 9) {
 			// // JFileChooser fc = new JFileChooser();
@@ -90,11 +95,33 @@ public class BlockHandler {
 			// // repos.add(e);
 			//
 			// // rpr.setRepositories(repos);
+
 			try {
-				Constructor entry = ReflectionHelper.findConstructor(Entry.class, File.class);
+				// Constructor<Entry> econst;
+				// econst = Entry.class.getDeclaredConstructor(File.class);
+				// econst.setAccessible(true);
+				// Entry entry = (Entry) econst.newInstance(new File(
+				// "E:\\Users\\FireController1847\\Desktop\\Forge\\Testing\\run\\resourcepacks\\Faithful1.12.2-rv4.zip"));
+				// System.out.println(entry);
+				ResourcePackRepository rpr = Minecraft.getMinecraft().getResourcePackRepository();
+
+				Class cls = Entry.class;
+				System.out.println(cls);
+
+				Constructor[] cn = cls.getDeclaredConstructors();
+				cn[0].setAccessible(true);
+				System.out.println(cn[0].getParameterTypes());
+
+				Entry entry = (Entry) cn[0].newInstance(rpr, new File(
+						"E:\\Users\\FireController1847\\Desktop\\Forge\\Testing\\run\\resourcepacks\\Faithful1.12.2-rv4.zip"),
+						rpr);
 				System.out.println(entry);
 			} catch (Exception e) {
-				System.out.println(e);
+				LogManager.getLogger().error(e);
+				StackTraceElement[] stack = e.getStackTrace();
+				for (StackTraceElement trace : stack) {
+					LogManager.getLogger().error(trace);
+				}
 			}
 		}
 	}
