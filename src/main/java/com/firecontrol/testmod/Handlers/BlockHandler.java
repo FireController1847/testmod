@@ -5,18 +5,24 @@ import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JFileChooser;
 import javax.swing.UIManager;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.apache.logging.log4j.LogManager;
+
+import com.firecontrol.testmod.GUI.ResourcePacksCustomGUI;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiMultiplayer;
+import net.minecraft.client.gui.GuiOptions;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.resources.IResourcePack;
+import net.minecraft.client.resources.ResourcePackFileNotFoundException;
 import net.minecraft.client.resources.ResourcePackRepository;
 import net.minecraft.client.resources.ResourcePackRepository.Entry;
 import net.minecraftforge.client.event.GuiScreenEvent.ActionPerformedEvent;
@@ -49,9 +55,6 @@ public class BlockHandler {
 			GuiMultiplayer gui = (GuiMultiplayer) event.getGui();
 			System.out.println("MPS");
 			List<GuiButton> buttons = event.getButtonList();
-			for (GuiButton button : event.getButtonList()) {
-
-			}
 			buttons.clear();
 			int topRow = gui.height - 62;
 			int bottomRow = gui.height - 40;
@@ -70,55 +73,42 @@ public class BlockHandler {
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
 	public void onActionPerformed(ActionPerformedEvent.Pre event) {
-		if (event.getGui() instanceof GuiMultiplayer && event.getButton().id == 9) {
-			// JFileChooser fc = new JFileChooser();
-			// fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-			// fc.getActionMap().get("viewTypeDetails").actionPerformed(null);
-			// fc.setPreferredSize(new Dimension(1200, 900));
-			// try {
-			// UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			// } catch (Exception e) {
-			// }
-			// if (fc.showOpenDialog(fc) == JFileChooser.APPROVE_OPTION) {
-			// System.out.println(fc.getSelectedFile().getAbsolutePath());
-			// }
-
+		if (event.getGui() instanceof GuiOptions && event.getButton().id == 105) {
+			GuiOptions gui = (GuiOptions) event.getGui();
+			event.setCanceled(true);
+			gui.mc.displayGuiScreen(new ResourcePacksCustomGUI(gui));
+		} else if (event.getGui() instanceof ResourcePacksCustomGUI) {
+			ResourcePacksCustomGUI gui = (ResourcePacksCustomGUI) event.getGui();
+			GuiButton button = event.getButton();
+			if (button.id != 3 && button.id != 4) return;
 			try {
-				JFileChooser fc = new JFileChooser();
-				fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-				fc.getActionMap().get("viewTypeDetails").actionPerformed(null);
-				fc.setPreferredSize(new Dimension(1200, 900));
-				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-				if (fc.showOpenDialog(fc) == JFileChooser.APPROVE_OPTION) {
-					ResourcePackRepository rpr = Minecraft.getMinecraft().getResourcePackRepository();
-					Class cls = ResourcePackRepository.class;
-					Method md = cls.getDeclaredMethod("getResourcePack", File.class);
-					md.setAccessible(true);
-					IResourcePack myNewPack = (IResourcePack) md.invoke(rpr,
-							new File("E:\\Users\\FireController1847\\Desktop\\Faithful 1.12.2-rv4.zip"));
-
-					Class cls2 = Entry.class;
-					Constructor cn = cls2.getDeclaredConstructor(ResourcePackRepository.class, IResourcePack.class);
-					cn.setAccessible(true);
-					Entry entry = (Entry) cn.newInstance(rpr, myNewPack);
-					System.out.println(entry);
-
-					entry.updateResourcePack();
-					// List<Entry> repos = rpr.getRepositoryEntriesAll();
-					// repos.add(entry);
-					// rpr.setRepositories(repos);
-
-					Field fls = cls.getDeclaredField("repositoryEntriesAll");
-					fls.setAccessible(true);
-					List<Entry> entries = (List<Entry>) fls.get(rpr);
-					System.out.println(entries);
+				File file = selectResourcePack();
+				if (file == null) return;
+				ResourcePackRepository rpr = Minecraft.getMinecraft().getResourcePackRepository();
+				IResourcePack pack = processResourcePack(rpr, file);
+				Entry entry = createNewEntry(rpr, pack);
+				List<Entry> entries = getRepositoryEntriesAll(rpr);
+				System.out.println("Loading or unloading pack!");
+				System.out.println(entries);
+				if (button.id == 3) {
+					if (entries.contains(entry)) return;
+					entries.add(entry);
+					gui.markChanged();
+				} else if (button.id == 4) {
 					if (entries.contains(entry)) {
 						entries.remove(entry);
 					}
-					entries.add(entry);
-					rpr.setRepositories(entries);
-					System.out.println(entries);
-					Minecraft.getMinecraft().refreshResources();
+				}
+				System.out.println(entries);
+				rpr.setRepositories(entries);
+				gui.update = true;
+				gui.initGui();
+			} catch (ResourcePackFileNotFoundException e) {
+				if (e.getMessage().contains("pack.mcmeta")) {
+					System.out.println("Invalid resource pack! Missing pack.mcmeta!");
+				} else {
+					System.out.println(e.hashCode());
+					System.out.println(e);
 				}
 			} catch (Exception e) {
 				LogManager.getLogger().error(e);
@@ -128,6 +118,40 @@ public class BlockHandler {
 				}
 			}
 		}
+	}
+
+	private File selectResourcePack() throws Exception {
+		JFileChooser fc = new JFileChooser();
+		fc.setAcceptAllFileFilterUsed(false);
+		fc.addChoosableFileFilter(new FileNameExtensionFilter("Resource Packs", "zip"));
+		fc.setFileSelectionMode(fc.FILES_AND_DIRECTORIES);
+		fc.getActionMap().get("viewTypeDetails").actionPerformed(null);
+		fc.setPreferredSize(new Dimension(1200, 900));
+		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		if (fc.showOpenDialog(fc) == fc.APPROVE_OPTION) {
+			return fc.getSelectedFile();
+		} else {
+			return null;
+		}
+	}
+
+	private IResourcePack processResourcePack(ResourcePackRepository rpr, File file) throws Exception {
+		Method m = ResourcePackRepository.class.getDeclaredMethod("getResourcePack", File.class);
+		m.setAccessible(true);
+		return (IResourcePack) m.invoke(rpr, (file.isDirectory() ? file : new File(file.getAbsolutePath())));
+	}
+	
+	private Entry createNewEntry(ResourcePackRepository rpr, IResourcePack pack) throws Exception {
+		Constructor c = Entry.class.getDeclaredConstructor(ResourcePackRepository.class, IResourcePack.class);
+		c.setAccessible(true);
+		return (Entry) c.newInstance(rpr, pack);
+	}
+	
+	private List<Entry> getRepositoryEntriesAll(ResourcePackRepository rpr) throws Exception {
+		Field f = ResourcePackRepository.class.getDeclaredField("repositoryEntriesAll");
+		f.setAccessible(true);
+		List<Entry> newList = new ArrayList((List<Entry>) f.get(rpr));
+		return newList;
 	}
 
 }
