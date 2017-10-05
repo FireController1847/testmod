@@ -2,6 +2,8 @@ package com.firecontrol.testmod.Handlers;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -10,6 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiMultiplayer;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.resources.IResourcePack;
 import net.minecraft.client.resources.ResourcePackRepository;
 import net.minecraft.client.resources.ResourcePackRepository.Entry;
 import net.minecraftforge.client.event.GuiScreenEvent.ActionPerformedEvent;
@@ -64,58 +67,35 @@ public class BlockHandler {
 	@SideOnly(Side.CLIENT)
 	public void onActionPerformed(ActionPerformedEvent.Pre event) {
 		if (event.getGui() instanceof GuiMultiplayer && event.getButton().id == 9) {
-			// // JFileChooser fc = new JFileChooser();
-			// // fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-			// // fc.getActionMap().get("viewTypeDetails").actionPerformed(null);
-			// // fc.setPreferredSize(new Dimension(1200, 900));
-			// // try {
-			// // UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			// // } catch (Exception e) {
-			// // }
-			// // if (fc.showOpenDialog(fc) == JFileChooser.APPROVE_OPTION) {
-			// // System.out.println(fc.getSelectedFile().getAbsolutePath());
-			// // }
-			// ResourcePackRepository rpr =
-			// Minecraft.getMinecraft().getResourcePackRepository();
-			// List<Entry> repos = rpr.getRepositoryEntriesAll();
-			// System.out.println(repos);
-			// for (Entry repo : repos) {
-			// System.out.println(repo);
+			// JFileChooser fc = new JFileChooser();
+			// fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			// fc.getActionMap().get("viewTypeDetails").actionPerformed(null);
+			// fc.setPreferredSize(new Dimension(1200, 900));
+			// try {
+			// UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			// } catch (Exception e) {
 			// }
-			// Entry myNewEntry = null;
-			// ObfuscationReflectionHelper.getPrivateValue(Entry.class, myNewEntry,
-			// "IResourcePack");
-			// System.out.println(myNewEntry);
-			// // Constructor item = ObfuscationReflectionHelper.getPrivateValue(Entry, , 0)
-			// // Entry e = new Entry(new
-			// //
-			// File("E:\\Users\\FireController1847\\Desktop\\Forge\\Testing\\run\\resourcepacks\\Faithful
-			// // 1.12.2-rv4.zip"));
-			// // System.out.println(e);
-			// // repos.add(e);
-			//
-			// // rpr.setRepositories(repos);
+			// if (fc.showOpenDialog(fc) == JFileChooser.APPROVE_OPTION) {
+			// System.out.println(fc.getSelectedFile().getAbsolutePath());
+			// }
 
 			try {
-				// Constructor<Entry> econst;
-				// econst = Entry.class.getDeclaredConstructor(File.class);
-				// econst.setAccessible(true);
-				// Entry entry = (Entry) econst.newInstance(new File(
-				// "E:\\Users\\FireController1847\\Desktop\\Forge\\Testing\\run\\resourcepacks\\Faithful1.12.2-rv4.zip"));
-				// System.out.println(entry);
 				ResourcePackRepository rpr = Minecraft.getMinecraft().getResourcePackRepository();
+				Class cls = ResourcePackRepository.class;
+				Method md = cls.getDeclaredMethod("getResourcePack", File.class);
+				md.setAccessible(true);
+				IResourcePack myNewPack = (IResourcePack) md.invoke(rpr,
+						new File("E:\\Users\\FireController1847\\Desktop\\Faithful 1.12.2-rv4.zip"));
 
-				Class cls = Entry.class;
-				System.out.println(cls);
-
-				Constructor[] cn = cls.getDeclaredConstructors();
-				cn[0].setAccessible(true);
-				System.out.println(cn[0].getParameterTypes());
-
-				Entry entry = (Entry) cn[0].newInstance(rpr, new File(
-						"E:\\Users\\FireController1847\\Desktop\\Forge\\Testing\\run\\resourcepacks\\Faithful1.12.2-rv4.zip"),
-						rpr);
+				Class cls2 = Entry.class;
+				Constructor cn = cls2.getDeclaredConstructor(ResourcePackRepository.class, IResourcePack.class);
+				cn.setAccessible(true);
+				Entry entry = (Entry) cn.newInstance(rpr, myNewPack);
 				System.out.println(entry);
+
+				List<Entry> repos = rpr.getRepositoryEntriesAll();
+				repos.add(entry);
+				rpr.setRepositories(repos);
 			} catch (Exception e) {
 				LogManager.getLogger().error(e);
 				StackTraceElement[] stack = e.getStackTrace();
