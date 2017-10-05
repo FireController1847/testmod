@@ -1,10 +1,14 @@
 package com.firecontrol.testmod.Handlers;
 
+import java.awt.Dimension;
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
+
+import javax.swing.JFileChooser;
+import javax.swing.UIManager;
 
 import org.apache.logging.log4j.LogManager;
 
@@ -80,22 +84,42 @@ public class BlockHandler {
 			// }
 
 			try {
-				ResourcePackRepository rpr = Minecraft.getMinecraft().getResourcePackRepository();
-				Class cls = ResourcePackRepository.class;
-				Method md = cls.getDeclaredMethod("getResourcePack", File.class);
-				md.setAccessible(true);
-				IResourcePack myNewPack = (IResourcePack) md.invoke(rpr,
-						new File("E:\\Users\\FireController1847\\Desktop\\Faithful 1.12.2-rv4.zip"));
+				JFileChooser fc = new JFileChooser();
+				fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				fc.getActionMap().get("viewTypeDetails").actionPerformed(null);
+				fc.setPreferredSize(new Dimension(1200, 900));
+				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+				if (fc.showOpenDialog(fc) == JFileChooser.APPROVE_OPTION) {
+					ResourcePackRepository rpr = Minecraft.getMinecraft().getResourcePackRepository();
+					Class cls = ResourcePackRepository.class;
+					Method md = cls.getDeclaredMethod("getResourcePack", File.class);
+					md.setAccessible(true);
+					IResourcePack myNewPack = (IResourcePack) md.invoke(rpr,
+							new File("E:\\Users\\FireController1847\\Desktop\\Faithful 1.12.2-rv4.zip"));
 
-				Class cls2 = Entry.class;
-				Constructor cn = cls2.getDeclaredConstructor(ResourcePackRepository.class, IResourcePack.class);
-				cn.setAccessible(true);
-				Entry entry = (Entry) cn.newInstance(rpr, myNewPack);
-				System.out.println(entry);
+					Class cls2 = Entry.class;
+					Constructor cn = cls2.getDeclaredConstructor(ResourcePackRepository.class, IResourcePack.class);
+					cn.setAccessible(true);
+					Entry entry = (Entry) cn.newInstance(rpr, myNewPack);
+					System.out.println(entry);
 
-				List<Entry> repos = rpr.getRepositoryEntriesAll();
-				repos.add(entry);
-				rpr.setRepositories(repos);
+					entry.updateResourcePack();
+					// List<Entry> repos = rpr.getRepositoryEntriesAll();
+					// repos.add(entry);
+					// rpr.setRepositories(repos);
+
+					Field fls = cls.getDeclaredField("repositoryEntriesAll");
+					fls.setAccessible(true);
+					List<Entry> entries = (List<Entry>) fls.get(rpr);
+					System.out.println(entries);
+					if (entries.contains(entry)) {
+						entries.remove(entry);
+					}
+					entries.add(entry);
+					rpr.setRepositories(entries);
+					System.out.println(entries);
+					Minecraft.getMinecraft().refreshResources();
+				}
 			} catch (Exception e) {
 				LogManager.getLogger().error(e);
 				StackTraceElement[] stack = e.getStackTrace();
