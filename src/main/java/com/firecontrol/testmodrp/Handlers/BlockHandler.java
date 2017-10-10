@@ -1,4 +1,4 @@
-package com.firecontrol.testmod.Handlers;
+package com.firecontrol.testmodrp.Handlers;
 
 import java.awt.Dimension;
 import java.io.File;
@@ -14,7 +14,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.apache.logging.log4j.LogManager;
 
-import com.firecontrol.testmod.GUI.ResourcePacksCustomGUI;
+import com.firecontrol.testmodrp.GUI.ResourcePacksCustomGUI;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;

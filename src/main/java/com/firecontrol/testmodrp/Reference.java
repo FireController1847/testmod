@@ -1,4 +1,4 @@
-package com.firecontrol.testmod;
+package com.firecontrol.testmodrp;
 
 import net.minecraftforge.fml.common.versioning.VersionRange;
 

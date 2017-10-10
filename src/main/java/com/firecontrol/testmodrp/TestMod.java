@@ -1,6 +1,6 @@
-package com.firecontrol.testmod;
+package com.firecontrol.testmodrp;
 
-import com.firecontrol.testmod.Handlers.BlockHandler;
+import com.firecontrol.testmodrp.Handlers.BlockHandler;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;

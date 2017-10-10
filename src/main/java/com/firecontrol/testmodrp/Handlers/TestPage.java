@@ -1,4 +1,4 @@
-package com.firecontrol.testmod.Handlers;
+package com.firecontrol.testmodrp.Handlers;
 
 import net.minecraft.client.gui.GuiMultiplayer;
 import net.minecraft.client.gui.GuiScreen;
