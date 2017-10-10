@@ -19,7 +19,7 @@ public class TestMod {
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
 		System.out.println("Mod initiated");
-//		MinecraftForge.EVENT_BUS.register(new BlockHandler());
+		MinecraftForge.EVENT_BUS.register(new BlockHandler());
 	}
 
 	@EventHandler
