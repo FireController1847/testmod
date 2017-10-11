@@ -7,6 +7,7 @@ import com.firecontrol.testmodaudio.Config;
 import com.firecontrol.testmodaudio.ReferenceA;
 import com.firecontrol.testmodaudio.TestModA;
 import com.firecontrol.testmodaudio.GUIA.GuiAudioManager;
+import com.firecontrol.testmodaudio.HandlersA.AudioA.ISoundA;
 import com.firecontrol.testmodaudio.HandlersA.AudioA.SoundManagerA;
 
 import net.minecraft.client.audio.ISound;
@@ -97,23 +98,8 @@ public class GUIEventHandlerA {
 
 	@SubscribeEvent
 	public void onSoundPlayed(PlaySoundEvent event) {
-		try {
-			if (event.getManager().getClass().getField("isNewSoundManager") == null) {
-				event.setResultSound(null);
-				TestModA.soundManager.playSound(event.getSound());
-				return;
-			}
-		} catch (NoSuchFieldException e) {
-			// Do Nothing
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		Sound sound = event.getSound().getSound();
-		if (sound == null) {
-			TestModA.logger.info(sound);
-			return;
-		}
-		TestModA.logger.info(sound.getSoundLocation());
+		event.setResultSound(null);
+		TestModA.soundManager.playSound((ISoundA) event.getSound());
 	}
 
 }

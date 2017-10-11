@@ -7,6 +7,8 @@ import com.firecontrol.testmodaudio.MusicList;
 import com.firecontrol.testmodaudio.MusicListEntry;
 import com.firecontrol.testmodaudio.ReferenceA;
 import com.firecontrol.testmodaudio.TestModA;
+import com.firecontrol.testmodaudio.HandlersA.AudioA.MusicTickerA;
+import com.firecontrol.testmodaudio.HandlersA.AudioA.SoundHandlerA;
 import com.google.common.collect.Lists;
 
 import net.minecraft.client.audio.MusicTicker;
@@ -59,15 +61,15 @@ public class GuiAudioManager extends GuiScreen {
 		}
 		if (button.id == 401) {
 			TestModA.logger.info("Button 401");
-			SoundHandler sh = this.mc.getSoundHandler();
-			MusicTicker mt = this.mc.getMusicTicker();
+			SoundHandlerA sh = TestModA.soundHandler;
+			MusicTickerA mt = TestModA.musicTicker;
 			sh.stopSounds();
 			mt.playMusic(MusicType.MENU);
 		}
 		if (button.id == 402) {
 			TestModA.logger.info("Button 402");
-			SoundHandler sh = this.mc.getSoundHandler();
-			MusicTicker mt = this.mc.getMusicTicker();
+			SoundHandlerA sh = TestModA.soundHandler;
+			MusicTickerA mt = TestModA.musicTicker;
 			sh.stopSounds();
 			ReferenceA.currentSongName = "None";
 		}

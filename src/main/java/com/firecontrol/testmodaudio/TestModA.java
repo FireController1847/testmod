@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.firecontrol.testmodaudio.HandlersA.GUIEventHandlerA;
+import com.firecontrol.testmodaudio.HandlersA.AudioA.MusicTickerA;
 import com.firecontrol.testmodaudio.HandlersA.AudioA.SoundHandlerA;
 import com.firecontrol.testmodaudio.HandlersA.AudioA.SoundManagerA;
 
@@ -22,6 +23,7 @@ public class TestModA {
 	public static final Logger logger = LogManager.getLogger(ReferenceA.INITIALS);
 	public static SoundHandlerA soundHandler;
 	public static SoundManagerA soundManager;
+	public static MusicTickerA musicTicker;
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
@@ -32,8 +34,10 @@ public class TestModA {
 
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
-		soundHandler = new SoundHandlerA(Minecraft.getMinecraft().getResourceManager(), Minecraft.getMinecraft().gameSettings);
+		soundHandler = new SoundHandlerA(Minecraft.getMinecraft().getResourceManager(),
+				Minecraft.getMinecraft().gameSettings);
 		soundManager = new SoundManagerA(soundHandler, Minecraft.getMinecraft().gameSettings);
+		musicTicker = new MusicTickerA(Minecraft.getMinecraft());
 		MinecraftForge.EVENT_BUS.register(new GUIEventHandlerA());
 		logger.info("Mod Initiated");
 	}
