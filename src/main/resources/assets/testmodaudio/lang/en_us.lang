@@ -1,2 +1,2 @@
-options.testmodaudio.settings=Audio Manager
-test.my_message.hello=Hello
+testmodaudio.audio_manager=Audio Manager
+testmodaudio.audio_manager.oldsongs=Previous Songs
