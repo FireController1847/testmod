@@ -18,14 +18,14 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 
-public class GuiAudioManager extends GuiScreen {
+public class GuiAudioManagerA extends GuiScreen {
 
 	private final GuiScreen parent;
 	private List<MusicListEntry> songListEntries;
 	private MusicList songList;
 	protected String title = "Audio Manager";
 
-	public GuiAudioManager(GuiScreen parentIn) {
+	public GuiAudioManagerA(GuiScreen parentIn) {
 		this.parent = parentIn;
 	}
 

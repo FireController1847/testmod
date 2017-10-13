@@ -27,18 +27,18 @@ public class TestModA {
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
-		Config.config = new Configuration(event.getSuggestedConfigurationFile());
-		Config.config.load();
-		Config.setupConfig();
+//		Config.config = new Configuration(event.getSuggestedConfigurationFile());
+//		Config.config.load();
+//		Config.setupConfig();
 	}
 
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
-		soundHandler = new SoundHandlerA(Minecraft.getMinecraft().getResourceManager(),
-				Minecraft.getMinecraft().gameSettings);
-		soundManager = new SoundManagerA(soundHandler, Minecraft.getMinecraft().gameSettings);
-		musicTicker = new MusicTickerA(Minecraft.getMinecraft());
-		MinecraftForge.EVENT_BUS.register(new GUIEventHandlerA());
+//		soundHandler = new SoundHandlerA(Minecraft.getMinecraft().getResourceManager(),
+//				Minecraft.getMinecraft().gameSettings);
+//		soundManager = new SoundManagerA(soundHandler, Minecraft.getMinecraft().gameSettings);
+//		musicTicker = new MusicTickerA(Minecraft.getMinecraft());
+//		MinecraftForge.EVENT_BUS.register(new GUIEventHandlerA());
 		logger.info("Mod Initiated");
 	}
 

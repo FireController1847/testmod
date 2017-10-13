@@ -6,7 +6,7 @@ import java.util.List;
 import com.firecontrol.testmodaudio.Config;
 import com.firecontrol.testmodaudio.ReferenceA;
 import com.firecontrol.testmodaudio.TestModA;
-import com.firecontrol.testmodaudio.GUIA.GuiAudioManager;
+import com.firecontrol.testmodaudio.GUIA.GuiAudioManagerA;
 import com.firecontrol.testmodaudio.HandlersA.AudioA.ISoundA;
 import com.firecontrol.testmodaudio.HandlersA.AudioA.SoundManagerA;
 
@@ -71,7 +71,7 @@ public class GUIEventHandlerA {
 	public void onActionPerformed(ActionPerformedEvent.Pre event) {
 		if (event.getGui() instanceof GuiScreenOptionsSounds && event.getButton().id == 247) {
 			GuiScreenOptionsSounds gui = (GuiScreenOptionsSounds) event.getGui();
-			gui.mc.displayGuiScreen(new GuiAudioManager(gui));
+			gui.mc.displayGuiScreen(new GuiAudioManagerA(gui));
 		}
 	}
 
@@ -98,8 +98,8 @@ public class GUIEventHandlerA {
 
 	@SubscribeEvent
 	public void onSoundPlayed(PlaySoundEvent event) {
-		event.setResultSound(null);
-		TestModA.soundManager.playSound((ISoundA) event.getSound());
+//		event.setResultSound(null);
+//		TestModA.soundManager.playSound((ISoundA) event.getSound());
 	}
 
 }

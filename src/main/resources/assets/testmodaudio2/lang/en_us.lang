@@ -1,0 +1,10 @@
+testmodaudio2.play=Play
+testmodaudio2.pause=Pause
+testmodaudio2.resume=Resume
+testmodaudio2.skip=Skip
+testmodaudio2.stop=Stop
+testmodaudio2.mm=Music Manager
+testmodaudio2.mp=Music Player
+testmodaudio2.ma=Music Available
+testmodaudio2.mp.current=Current Song
+testmodaudio2.mp.prev=Previous Songs
