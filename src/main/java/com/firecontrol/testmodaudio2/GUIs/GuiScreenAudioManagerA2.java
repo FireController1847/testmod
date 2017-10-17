@@ -8,15 +8,16 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 
-public class GuiAudioManagerA2 extends GuiScreen {
+public class GuiScreenAudioManagerA2 extends GuiScreen {
 
 	private final GuiScreen parent;
 	private String title;
 
-	public GuiAudioManagerA2(GuiScreen parentIn) {
+	public GuiScreenAudioManagerA2(GuiScreen parentIn) {
 		this.parent = parentIn;
 	}
 
+	@Override
 	public void initGui() {
 		this.title = I18n.format(ReferenceA2.MOD_ID.toLowerCase() + ".mm");
 		// Left Side
@@ -30,20 +31,23 @@ public class GuiAudioManagerA2 extends GuiScreen {
 		this.buttonList.add(new GuiButton(400, this.width / 2 - 100, this.height / 6 + 168, I18n.format("gui.done")));
 	}
 
+	@Override
 	public void handleMouseInput() throws IOException {
 		super.handleMouseInput();
 	}
 
+	@Override
 	protected void actionPerformed(GuiButton button) throws IOException {
 		if (!button.enabled)
 			return;
 		if (button.id == 400) {
 			this.mc.displayGuiScreen(this.parent);
 		} else if (button.id == 401) {
-			this.mc.displayGuiScreen(new GuiMusicPlayerA2(this));
+			this.mc.displayGuiScreen(new GuiScreenMusicPlayerA2(this));
 		}
 	}
 
+	@Override
 	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
 		super.mouseClicked(mouseX, mouseY, mouseButton);
 	}
@@ -52,8 +56,9 @@ public class GuiAudioManagerA2 extends GuiScreen {
 		super.mouseReleased(mouseX, mouseY, state);
 	}
 
+	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-		this.drawDefaultBackground();
+		this.drawBackground(0);
 		this.drawCenteredString(this.fontRenderer, this.title, this.width / 2, 15, 16777215);
 		super.drawScreen(mouseX, mouseY, partialTicks);
 	}

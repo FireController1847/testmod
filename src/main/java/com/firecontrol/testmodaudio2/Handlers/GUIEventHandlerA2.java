@@ -3,11 +3,15 @@ package com.firecontrol.testmodaudio2.Handlers;
 import java.util.List;
 
 import com.firecontrol.testmodaudio2.ReferenceA2;
-import com.firecontrol.testmodaudio2.GUIs.GuiAudioManagerA2;
+import com.firecontrol.testmodaudio2.GUIs.GuiScreenAudioManagerA2;
+import com.firecontrol.testmodaudio2.GUIs.GuiScreenMusicPlayerA2;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreenOptionsSounds;
 import net.minecraft.client.resources.I18n;
+import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent.ActionPerformedEvent;
 import net.minecraftforge.client.event.GuiScreenEvent.InitGuiEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -38,7 +42,15 @@ public class GUIEventHandlerA2 {
 	public void onActionPerformed(ActionPerformedEvent.Pre event) {
 		if (event.getGui() instanceof GuiScreenOptionsSounds && event.getButton().id == 247) {
 			GuiScreenOptionsSounds gui = (GuiScreenOptionsSounds) event.getGui();
-			gui.mc.displayGuiScreen(new GuiAudioManagerA2(gui));
+			gui.mc.displayGuiScreen(new GuiScreenAudioManagerA2(gui));
+		}
+	}
+
+	@SubscribeEvent
+	public void onGuiOpen(GuiOpenEvent event) {
+		if (event.getGui() instanceof GuiScreenMusicPlayerA2) {
+			SoundHandler sh = Minecraft.getMinecraft().getSoundHandler();
+			sh.resumeSounds();
 		}
 	}
 

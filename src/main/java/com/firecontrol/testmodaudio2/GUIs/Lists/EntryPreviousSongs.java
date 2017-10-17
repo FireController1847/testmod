@@ -10,17 +10,24 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiListExtended.IGuiListEntry;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.util.ResourceLocation;
 
 public class EntryPreviousSongs implements IGuiListEntry {
 
+	private ResourceLocation songImage = new ResourceLocation("textures/misc/unknown_pack.png");
 	protected final Minecraft mc;
 	public boolean current;
 	private String name;
+	private String desc;
 
-	public EntryPreviousSongs(String name, boolean currentIn) {
+	public EntryPreviousSongs(String nameIn, String descIn, boolean currentIn, ResourceLocation icon) {
 		this.mc = Minecraft.getMinecraft();
-		this.name = name;
+		this.name = nameIn;
+		this.desc = descIn;
 		this.current = currentIn;
+		if (icon != null) {
+			this.songImage = icon;
+		}
 	}
 
 	public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY,
@@ -31,11 +38,15 @@ public class EntryPreviousSongs implements IGuiListEntry {
 			Gui.drawRect(x - 1, y - 1, x + listWidth - 9, y + slotHeight + 1,
 					(new Color((34F / 255F), (139F / 255F), (34F / 255F), 0.4F)).hashCode());
 		}
+		this.mc.getTextureManager().bindTexture(this.songImage);        
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		Gui.drawModalRectWithCustomSizedTexture(x, y, 0.0F, 0.0F, 32, 32, 32.0F, 32.0F);
 
 		String s = this.name;
 		String s1 = (this.current ? I18n.format(ReferenceA2.MOD_ID.toLowerCase() + ".mp.current") : "");
+		if (this.desc != this.name) {
+			s1 += (this.current ? " - " + this.desc : this.desc) + ".ogg";
+		}
 
 		int i1 = this.mc.fontRenderer.getStringWidth(s);
 		if (i1 > 105) {

@@ -16,7 +16,7 @@ public class ListPreviousSongs extends GuiListExtended {
 	protected final List<EntryPreviousSongs> entries;
 
 	public ListPreviousSongs(Minecraft mcIn, int widthIn, int heightIn, List<EntryPreviousSongs> entriesIn) {
-		super(mcIn, widthIn, heightIn, 15, heightIn - 15, 36);
+		super(mcIn, widthIn, heightIn, 15, heightIn - 55, 36);
 		this.mc = mcIn;
 		this.entries = entriesIn;
 		this.centerListVertically = false;

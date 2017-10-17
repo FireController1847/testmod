@@ -7,12 +7,9 @@ import com.firecontrol.testmodaudio.Config;
 import com.firecontrol.testmodaudio.ReferenceA;
 import com.firecontrol.testmodaudio.TestModA;
 import com.firecontrol.testmodaudio.GUIA.GuiAudioManagerA;
-import com.firecontrol.testmodaudio.HandlersA.AudioA.ISoundA;
-import com.firecontrol.testmodaudio.HandlersA.AudioA.SoundManagerA;
 
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.Sound;
-import net.minecraft.client.audio.SoundManager;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiOptions;
 import net.minecraft.client.gui.GuiScreenOptionsSounds;
@@ -98,8 +95,8 @@ public class GUIEventHandlerA {
 
 	@SubscribeEvent
 	public void onSoundPlayed(PlaySoundEvent event) {
-//		event.setResultSound(null);
-//		TestModA.soundManager.playSound((ISoundA) event.getSound());
+		// event.setResultSound(null);
+		// TestModA.soundManager.playSound((ISoundA) event.getSound());
 	}
 
 }
